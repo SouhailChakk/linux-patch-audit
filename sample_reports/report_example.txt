@@ -1,0 +1,18 @@
+Linux Patch Audit Report
+========================================
+Generated: 2025-03-23 20:15:00
+System: Linux-6.x-Ubuntu
+
+Pending updates: 12
+
+All Upgradable Packages
+----------------------------------------
+openssl/ubuntu-updates 3.x.x
+curl/ubuntu-updates 8.x.x
+sudo/ubuntu-updates 1.x.x
+
+Security-Relevant Packages
+----------------------------------------
+openssl/ubuntu-updates 3.x.x
+curl/ubuntu-updates 8.x.x
+sudo/ubuntu-updates 1.x.x
