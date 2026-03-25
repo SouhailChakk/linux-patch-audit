@@ -38,3 +38,18 @@ This project demonstrates automation, Linux system management, and basic securit
 ---
 
 ## Project Structure
+linux-patch-audit/
+│
+├── patch_audit.py # Python version of the patch audit tool
+├── patch_audit.sh # Bash version of the patch audit tool
+├── sample_reports/
+│ └── report_example.txt
+└── README.md
+
+
+---
+
+## How to Run
+
+### Python Version
+python3 patch_audit.py
