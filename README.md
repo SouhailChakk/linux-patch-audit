@@ -1,21 +1,40 @@
 # Linux Patch Audit
 
-A lightweight patch auditing tool for Ubuntu/Debian systems that checks for pending package updates, highlights security-relevant packages, and generates a simple audit report.
+A lightweight Linux patch auditing tool written in Python and Bash that checks for pending package updates, identifies security-relevant patches, and generates an audit report.  
+This project simulates basic system maintenance and patch management tasks typically performed in SRE, SOC, and system administration roles.
+
+---
+
+## Project Overview
+
+Keeping systems updated is a critical security and reliability task. This tool automates the process of:
+
+- Checking for pending updates
+- Identifying security-related packages
+- Generating a patch audit report
+- Providing both Python and Bash implementations
+
+This project demonstrates automation, Linux system management, and basic security auditing practices.
+
+---
 
 ## Features
-- Detects pending package upgrades
-- Exports results to a timestamped report
-- Highlights potentially security-related packages
-- Includes both Python and Bash implementations
 
-## Why I Built This
-I built this project to practice basic SRE-style infrastructure hygiene tasks such as patch auditing, system maintenance, and repeatable reporting.
+- Detects pending package upgrades
+- Highlights security-relevant packages (openssl, ssh, kernel, sudo, etc.)
+- Generates timestamped audit reports
+- Works on Ubuntu/Debian systems
+- Available in both Python and Bash versions
+
+---
 
 ## Tech Stack
+
 - Python
 - Bash
-- apt
-- Linux
+- Linux (Ubuntu/Debian)
+- apt package manager
 
-## How to Run
-python3 patch_audit.py
+---
+
+## Project Structure
