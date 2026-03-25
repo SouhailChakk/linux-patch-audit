@@ -3,7 +3,6 @@ import platform
 from datetime import datetime
 from pathlib import Path
 
-
 SECURITY_KEYWORDS = [
     "openssl",
     "ssh",
@@ -16,7 +15,8 @@ SECURITY_KEYWORDS = [
 ]
 
 
-def run_command(command: list[str]) -> tuple[bool, str]:
+def run_command(command):
+    """Run a shell command and return output."""
     try:
         result = subprocess.run(
             command,
@@ -26,48 +26,50 @@ def run_command(command: list[str]) -> tuple[bool, str]:
         )
         return True, result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        return False, (e.stdout + "\n" + e.stderr).strip()
-    except FileNotFoundError:
-        return False, f"Command not found: {' '.join(command)}"
+        return False, e.stderr.strip()
 
 
-def detect_os() -> str:
+def detect_os():
+    """Detect operating system."""
     return platform.platform()
 
 
-def get_upgradable_packages() -> list[str]:
+def get_upgradable_packages():
+    """Get list of upgradable packages."""
+    print("Updating package list...")
     ok, _ = run_command(["apt", "update"])
     if not ok:
-        return ["ERROR: Failed to run apt update"]
+        return []
 
     ok, output = run_command(["apt", "list", "--upgradable"])
     if not ok:
-        return ["ERROR: Failed to list upgradable packages"]
+        return []
 
-    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    lines = output.splitlines()
     if len(lines) <= 1:
         return []
 
     return lines[1:]
 
 
-def highlight_security_packages(packages: list[str]) -> list[str]:
+def highlight_security_packages(packages):
+    """Filter security-related packages."""
     flagged = []
     for pkg in packages:
-        lower_pkg = pkg.lower()
-        if any(keyword in lower_pkg for keyword in SECURITY_KEYWORDS):
+        if any(keyword in pkg.lower() for keyword in SECURITY_KEYWORDS):
             flagged.append(pkg)
     return flagged
 
 
-def write_report(packages: list[str], flagged: list[str]) -> Path:
+def write_report(packages, flagged):
+    """Write audit report to file."""
     report_dir = Path("sample_reports")
     report_dir.mkdir(exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     report_path = report_dir / f"patch_report_{timestamp}.txt"
 
-    with report_path.open("w", encoding="utf-8") as f:
+    with open(report_path, "w") as f:
         f.write("Linux Patch Audit Report\n")
         f.write("=" * 40 + "\n")
         f.write(f"Generated: {datetime.now()}\n")
@@ -76,38 +78,29 @@ def write_report(packages: list[str], flagged: list[str]) -> Path:
 
         f.write("All Upgradable Packages\n")
         f.write("-" * 40 + "\n")
-        if packages:
-            for pkg in packages:
-                f.write(pkg + "\n")
-        else:
-            f.write("No pending updates found.\n")
+        for pkg in packages:
+            f.write(pkg + "\n")
 
         f.write("\nSecurity-Relevant Packages\n")
         f.write("-" * 40 + "\n")
-        if flagged:
-            for pkg in flagged:
-                f.write(pkg + "\n")
-        else:
-            f.write("No obvious security-relevant packages flagged.\n")
+        for pkg in flagged:
+            f.write(pkg + "\n")
 
     return report_path
 
 
-def main() -> None:
-    print("Running Linux patch audit...\n")
+def main():
+    print("Running Linux Patch Audit...\n")
+
     packages = get_upgradable_packages()
-
-    if packages and packages[0].startswith("ERROR:"):
-        print(packages[0])
-        return
-
     flagged = highlight_security_packages(packages)
-    report_path = write_report(packages, flagged)
+    report = write_report(packages, flagged)
 
-    print(f"System: {detect_os()}")
-    print(f"Pending updates found: {len(packages)}")
-    print(f"Security-relevant packages flagged: {len(flagged)}")
-    print(f"Report saved to: {report_path}")
+    print("Audit Complete")
+    print("System:", detect_os())
+    print("Pending updates:", len(packages))
+    print("Security packages:", len(flagged))
+    print("Report saved to:", report)
 
 
 if __name__ == "__main__":
